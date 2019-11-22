@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using System.Windows.Markup;
 
@@ -12,22 +9,21 @@ namespace FontAwesome.WPF.Converters
     /// <summary>
     /// Converts the CSS class name to a FontAwesomIcon and vice-versa.
     /// </summary>
-    public class CssClassNameConverter
-        : MarkupExtension, IValueConverter
+    public class CssClassNameConverter : MarkupExtension, IValueConverter
     {
         private static readonly IDictionary<string, FontAwesomeIcon> ClassNameLookup = new Dictionary<string, FontAwesomeIcon>();
         private static readonly IDictionary<FontAwesomeIcon, string> IconLookup = new Dictionary<FontAwesomeIcon, string>();
 
         static CssClassNameConverter()
         {
-            foreach (var value in Enum.GetValues(typeof(FontAwesomeIcon)))
+            foreach (object value in Enum.GetValues(typeof(FontAwesomeIcon)))
             {
                 var memInfo = typeof(FontAwesomeIcon).GetMember(value.ToString());
-                var attributes = memInfo[0].GetCustomAttributes(typeof(IconIdAttribute), false);
+                object[] attributes = memInfo[0].GetCustomAttributes(typeof(IconIdAttribute), false);
 
                 if (attributes.Length == 0) continue; // alias
 
-                var id = ((IconIdAttribute)attributes[0]).Id;
+                string id = ((IconIdAttribute)attributes[0]).Id;
 
                 if (ClassNameLookup.ContainsKey(id)) continue;
 
@@ -43,13 +39,12 @@ namespace FontAwesome.WPF.Converters
 
         private static FontAwesomeIcon FromStringToIcon(object value)
         {
-            var icon = value as string;
+            string icon = value as string;
 
             if (string.IsNullOrEmpty(icon)) return FontAwesomeIcon.None;
 
-            FontAwesomeIcon rValue;
 
-            if (!ClassNameLookup.TryGetValue(icon, out rValue))
+            if (!ClassNameLookup.TryGetValue(icon, out var rValue))
             {
                 rValue = FontAwesomeIcon.None;
             }
@@ -61,10 +56,9 @@ namespace FontAwesome.WPF.Converters
         {
             if (!(value is FontAwesomeIcon)) return null;
 
-            string rValue = null;
 
-            IconLookup.TryGetValue((FontAwesomeIcon) value, out rValue);
-            
+            IconLookup.TryGetValue((FontAwesomeIcon)value, out string rValue);
+
             return rValue;
         }
 
@@ -72,7 +66,7 @@ namespace FontAwesome.WPF.Converters
         {
             if (Mode == CssClassConverterMode.FromStringToIcon)
                 return FromStringToIcon(value);
-            
+
             return FromIconToString(value);
         }
 
@@ -84,10 +78,7 @@ namespace FontAwesome.WPF.Converters
             return FromStringToIcon(value);
         }
 
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
+        public override object ProvideValue(IServiceProvider serviceProvider) => this;
     }
 
     /// <summary>

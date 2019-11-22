@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -16,7 +14,7 @@ namespace FontAwesome.WPF
         /// <summary>
         /// The key used for storing the spinner Storyboard.
         /// </summary>
-        private static readonly string SpinnerStoryBoardName = String.Format("{0}Spinner", typeof(FontAwesome).Name);
+        private static readonly string SpinnerStoryBoardName = string.Format("{0}Spinner", typeof(FontAwesome).Name);
 
         /// <summary>
         /// Start the spinning animation
@@ -70,9 +68,8 @@ namespace FontAwesome.WPF
         public static void StopSpin<T>(this T control)
             where T : FrameworkElement, ISpinable
         {
-            var storyboard = control.Resources[SpinnerStoryBoardName] as Storyboard;
-
-            if (storyboard == null) return;
+            if (!(control.Resources[SpinnerStoryBoardName] is Storyboard storyboard)) 
+                return;
 
             storyboard.Stop();
 
@@ -113,8 +110,8 @@ namespace FontAwesome.WPF
         {
             var transformGroup = control.RenderTransform as TransformGroup ?? new TransformGroup();
 
-            var scaleX = control.FlipOrientation == FlipOrientation.Normal || control.FlipOrientation == FlipOrientation.Vertical ? 1 : -1;
-            var scaleY = control.FlipOrientation == FlipOrientation.Normal || control.FlipOrientation == FlipOrientation.Horizontal ? 1 : -1;
+            int scaleX = control.FlipOrientation == FlipOrientation.Normal || control.FlipOrientation == FlipOrientation.Vertical ? 1 : -1;
+            int scaleY = control.FlipOrientation == FlipOrientation.Normal || control.FlipOrientation == FlipOrientation.Horizontal ? 1 : -1;
 
             var scaleTransform = transformGroup.Children.OfType<ScaleTransform>().FirstOrDefault();
 

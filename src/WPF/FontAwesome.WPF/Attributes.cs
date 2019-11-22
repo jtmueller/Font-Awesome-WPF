@@ -6,8 +6,7 @@ namespace FontAwesome.WPF
     /// Represents the category of a fontawesome icon.
     /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = false)]
-    public class IconCategoryAttribute
-        : Attribute
+    public sealed class IconCategoryAttribute : Attribute
     {
         /// <summary>
         /// Gets or sets the category of the icon.
@@ -26,16 +25,14 @@ namespace FontAwesome.WPF
     /// Represents the field is an alias of another icon.
     /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
-    public class IconAliasAttribute
-        : Attribute
+    public sealed class IconAliasAttribute : Attribute
     { }
 
     /// <summary>
     /// Represents the id (css class name) of the icon.
     /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
-    public class IconIdAttribute
-        : Attribute
+    public sealed class IconIdAttribute : Attribute
     {
         /// <summary>
         /// Gets or sets the id (css class name) of the icon.
