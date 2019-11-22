@@ -9,8 +9,7 @@ namespace FontAwesome.WPF
     /// <summary>
     /// Represents a control that draws an FontAwesome icon as an image.
     /// </summary>
-    public class ImageAwesome
-        : Image, ISpinable, IRotatable, IFlippable
+    public class ImageAwesome : Image, ISpinable, IRotatable, IFlippable
     {
         /// <summary>
         /// FontAwesome FontFamily.
@@ -62,44 +61,41 @@ namespace FontAwesome.WPF
             IsVisibleChanged += (s, a) => CoerceValue(SpinProperty);
         }
 
-        private static void OpacityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            d.CoerceValue(SpinProperty);
-        }
+        private static void OpacityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => d.CoerceValue(SpinProperty);
 
         /// <summary>
         /// Gets or sets the foreground brush of the icon. Changing this property will cause the icon to be redrawn.
         /// </summary>
         public Brush Foreground
         {
-            get { return (Brush)GetValue(ForegroundProperty); }
-            set { SetValue(ForegroundProperty, value); }
+            get => (Brush)GetValue(ForegroundProperty);
+            set => SetValue(ForegroundProperty, value);
         }
         /// <summary>
         /// Gets or sets the FontAwesome icon. Changing this property will cause the icon to be redrawn.
         /// </summary>
         public FontAwesomeIcon Icon
         {
-            get { return (FontAwesomeIcon)GetValue(IconProperty); }
-            set { SetValue(IconProperty, value); }
+            get => (FontAwesomeIcon)GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
         }
         /// <summary>
         /// Gets or sets the current spin (angle) animation of the icon.
         /// </summary>
         public bool Spin
         {
-            get { return (bool)GetValue(SpinProperty); }
-            set { SetValue(SpinProperty, value); }
+            get => (bool)GetValue(SpinProperty);
+            set => SetValue(SpinProperty, value);
         }
 
         private static void OnSpinPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var imageAwesome = d as ImageAwesome;
-
-            if (imageAwesome == null) return;
+            if (!(d is ImageAwesome imageAwesome)) return;
 
             if ((bool)e.NewValue)
+            {
                 imageAwesome.BeginSpin();
+            }
             else
             {
                 imageAwesome.StopSpin();
@@ -122,15 +118,14 @@ namespace FontAwesome.WPF
         /// </summary>
         public double SpinDuration
         {
-            get { return (double)GetValue(SpinDurationProperty); }
-            set { SetValue(SpinDurationProperty, value); }
+            get => (double)GetValue(SpinDurationProperty);
+            set => SetValue(SpinDurationProperty, value);
         }
 
         private static void SpinDurationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var imageAwesome = d as ImageAwesome;
-
-            if (null == imageAwesome || !imageAwesome.Spin || !(e.NewValue is double) || e.NewValue.Equals(e.OldValue)) return;
+            if (!(d is ImageAwesome imageAwesome) || !imageAwesome.Spin || !(e.NewValue is double) || e.NewValue.Equals(e.OldValue)) 
+                return;
 
             imageAwesome.StopSpin();
             imageAwesome.BeginSpin();
@@ -147,16 +142,15 @@ namespace FontAwesome.WPF
         /// </summary>
         public double Rotation
         {
-            get { return (double)GetValue(RotationProperty); }
-            set { SetValue(RotationProperty, value); }
+            get => (double)GetValue(RotationProperty);
+            set => SetValue(RotationProperty, value);
         }
 
-     
+
         private static void RotationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var imageAwesome = d as ImageAwesome;
-
-            if (null == imageAwesome || imageAwesome.Spin || !(e.NewValue is double) || e.NewValue.Equals(e.OldValue)) return;
+            if (!(d is ImageAwesome imageAwesome) || imageAwesome.Spin || !(e.NewValue is double) || e.NewValue.Equals(e.OldValue))
+                return;
 
             imageAwesome.SetRotation();
         }
@@ -172,24 +166,21 @@ namespace FontAwesome.WPF
         /// </summary>
         public FlipOrientation FlipOrientation
         {
-            get { return (FlipOrientation)GetValue(FlipOrientationProperty); }
-            set { SetValue(FlipOrientationProperty, value); }
+            get => (FlipOrientation)GetValue(FlipOrientationProperty);
+            set => SetValue(FlipOrientationProperty, value);
         }
 
         private static void FlipOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var imageAwesome = d as ImageAwesome;
+            if (!(d is ImageAwesome imageAwesome) || !(e.NewValue is FlipOrientation) || e.NewValue.Equals(e.OldValue)) 
+                return;
 
-            if (null == imageAwesome || !(e.NewValue is FlipOrientation) || e.NewValue.Equals(e.OldValue)) return;
-            
             imageAwesome.SetFlipOrientation();
         }
 
         private static void OnIconPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var imageAwesome = d as ImageAwesome;
-
-            if (imageAwesome == null) return;
+            if (!(d is ImageAwesome imageAwesome)) return;
 
             imageAwesome.SetValue(SourceProperty, CreateImageSource(imageAwesome.Icon, imageAwesome.Foreground));
         }
@@ -203,14 +194,15 @@ namespace FontAwesome.WPF
         /// <returns>A new System.Windows.Media.ImageSource</returns>
         public static ImageSource CreateImageSource(FontAwesomeIcon icon, Brush foregroundBrush, double emSize = 100)
         {
-            var charIcon = char.ConvertFromUtf32((int)icon);
+            string charIcon = char.ConvertFromUtf32((int)icon);
 
             var visual = new DrawingVisual();
             using (var drawingContext = visual.RenderOpen())
             {
                 drawingContext.DrawText(
                     new FormattedText(charIcon, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
-                        FontAwesomeTypeface, emSize, foregroundBrush) { TextAlignment = TextAlignment.Center }, new Point(0, 0));
+                        FontAwesomeTypeface, emSize, foregroundBrush, 1.0)
+                    { TextAlignment = TextAlignment.Center }, new Point(0, 0));
             }
             return new DrawingImage(visual.Drawing);
         }

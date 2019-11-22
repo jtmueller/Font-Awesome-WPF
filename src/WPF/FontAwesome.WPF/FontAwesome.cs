@@ -8,8 +8,7 @@ namespace FontAwesome.WPF
     /// <summary>
     /// Provides a lightweight control for displaying a FontAwesome icon as text.
     /// </summary>
-    public class FontAwesome
-        : TextBlock, ISpinable, IRotatable, IFlippable
+    public class FontAwesome : TextBlock, ISpinable, IRotatable, IFlippable
     {
         /// <summary>
         /// FontAwesome FontFamily.
@@ -51,31 +50,30 @@ namespace FontAwesome.WPF
             IsVisibleChanged += (s, a) => CoerceValue(SpinProperty);
         }
 
-        private static void OpacityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            d.CoerceValue(SpinProperty);
-        }
+        private static void OpacityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) 
+            => d.CoerceValue(SpinProperty);
 
         /// <summary>
         /// Gets or sets the FontAwesome icon. Changing this property will cause the icon to be redrawn.
         /// </summary>
         public FontAwesomeIcon Icon
         {
-            get { return (FontAwesomeIcon)GetValue(IconProperty); }
-            set { SetValue(IconProperty, value); }
+            get => (FontAwesomeIcon)GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
         }
+
         /// <summary>
         /// Gets or sets the current spin (angle) animation of the icon.
         /// </summary>
         public bool Spin
         {
-            get { return (bool)GetValue(SpinProperty); }
-            set { SetValue(SpinProperty, value); }
+            get => (bool)GetValue(SpinProperty);
+            set => SetValue(SpinProperty, value);
         }
 
         private static void OnIconPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-#if NET40
+#if NET40 || NETCOREAPP3_0
             d.SetValue(TextOptions.TextRenderingModeProperty, TextRenderingMode.ClearType);
 #endif
             d.SetValue(FontFamilyProperty, FontAwesomeFontFamily);
@@ -85,12 +83,12 @@ namespace FontAwesome.WPF
 
         private static void OnSpinPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var fontAwesome = d as FontAwesome;
-
-            if (fontAwesome == null) return;
+            if (!(d is FontAwesome fontAwesome)) return;
 
             if ((bool)e.NewValue)
+            {
                 fontAwesome.BeginSpin();
+            }
             else
             {
                 fontAwesome.StopSpin();
@@ -113,15 +111,14 @@ namespace FontAwesome.WPF
         /// </summary>
         public double SpinDuration
         {
-            get { return (double)GetValue(SpinDurationProperty); }
-            set { SetValue(SpinDurationProperty, value); }
+            get => (double)GetValue(SpinDurationProperty);
+            set => SetValue(SpinDurationProperty, value);
         }
 
         private static void SpinDurationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var fontAwesome = d as FontAwesome;
-
-            if (null == fontAwesome || !fontAwesome.Spin || !(e.NewValue is double) || e.NewValue.Equals(e.OldValue)) return;
+            if (!(d is FontAwesome fontAwesome) || !fontAwesome.Spin || !(e.NewValue is double) || e.NewValue.Equals(e.OldValue)) 
+                return;
 
             fontAwesome.StopSpin();
             fontAwesome.BeginSpin();
@@ -138,15 +135,14 @@ namespace FontAwesome.WPF
         /// </summary>
         public double Rotation
         {
-            get { return (double)GetValue(RotationProperty); }
-            set { SetValue(RotationProperty, value); }
+            get => (double)GetValue(RotationProperty);
+            set => SetValue(RotationProperty, value);
         }
 
         private static void RotationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var fontAwesome = d as FontAwesome;
-
-            if (null == fontAwesome || fontAwesome.Spin || !(e.NewValue is double) || e.NewValue.Equals(e.OldValue)) return;
+            if (!(d is FontAwesome fontAwesome) || fontAwesome.Spin || !(e.NewValue is double) || e.NewValue.Equals(e.OldValue)) 
+                return;
 
             fontAwesome.SetRotation();
         }
@@ -162,15 +158,14 @@ namespace FontAwesome.WPF
         /// </summary>
         public FlipOrientation FlipOrientation
         {
-            get { return (FlipOrientation)GetValue(FlipOrientationProperty); }
-            set { SetValue(FlipOrientationProperty, value); }
+            get => (FlipOrientation)GetValue(FlipOrientationProperty);
+            set => SetValue(FlipOrientationProperty, value);
         }
 
         private static void FlipOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var fontAwesome = d as FontAwesome;
-
-            if (null == fontAwesome || !(e.NewValue is FlipOrientation) || e.NewValue.Equals(e.OldValue)) return;
+            if (!(d is FontAwesome fontAwesome) || !(e.NewValue is FlipOrientation) || e.NewValue.Equals(e.OldValue)) 
+                return;
 
             fontAwesome.SetFlipOrientation();
         }
